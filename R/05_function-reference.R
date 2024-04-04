@@ -1,8 +1,7 @@
 # 05 - Function reference ----
+library(yfR)
 
 ## All functions ----
-
-library(yfR)
 
 ### yf_cachefolder_get() ----
 
@@ -51,24 +50,17 @@ print(l_wide$price_adjusted)
 # Download financial data from Yahoo Finance
 
 # You can define a threshold for bad data.
-# The default is
-# thresh_bad_data = 0.75
-# If the percentage of non-missing dates with
-# respect to thte benchmark ticker is lower than
-# thresh_bad_data, the function will ignore the
-# assets.
+# The default is `thresh_bad_data = 0.75`
+# If the percentage of non-missing dates with respect to 
+# the benchmark ticker is lower than thresh_bad_data, 
+# the function will ignore the assets.
 
-# The default benchmark asset used to compare dates is
-# bench_ticker = "^GSPC"
-# You should use the main stock index of the market
-# from where the data is coming from.
+# The default benchmark asset used to compare dates is `bench_ticker = "^GSPC"`
+# You should use the main stock index of the market from where the data is coming from.
 
-# The default for the return type is
-# type_return = "arit"
+# The default for the return type is `type_return = "arit"`
 # for arithmetic returns.
-# Use 
-# type_return = "log" 
-# for log returns.
+# Use type_return = "log" for log returns.
 
 # The default for how to aggregate the data using the
 # first observations of the aggregating period or the last
@@ -93,8 +85,7 @@ print(l_wide$price_adjusted)
 
 
 # Be aware that when using a cache system in a 
-# local folder, and not the default
-# tempdir()
+# local folder, and not the default `tempdir()`
 # the aggregate prices series might not match if 
 # a stock split or dividends happen between cache files.
 
@@ -134,29 +125,21 @@ print(yf_get_available_collections(print_description = TRUE))
 
 # This function uses Yahoo Finance's JSON API
 # to retrieve dividends.
+yf_get_dividends(ticker = "PETR4.SA")
 
-yf_get_dividends(
-  ticker = "PETR4.SA"
-)
+# Be aware that YF does not provide a consistent dividend database.
+# Use this function with caution.
 
-# Be aware that YF does not provide a consistend dividend
-# database.
-# Use this function with caution
-
-# The default for first_date is Sys.Date() - 365
-# and for last_date it is Sys.Date
+# The default for first_date is `Sys.Date() - 365`
+# and for last_date it is `Sys.Date()`.
 
 
 ### yf_index_composition() ----
-
 # Get current composition of stock indices
-
 df_sp500 <- yf_index_composition("SP500")
 print(df_sp500)
 
-
 ### yf_index_list() ----
-
 # Get available indices in package
 
 # This function returns all available market indices
@@ -168,7 +151,6 @@ print(indices)
 
 
 ### yf_live_prices() ----
-
 # Yahoo Finance Live Prices
 
 # This function uses Yahoo Finance's JSON API to

@@ -1,33 +1,24 @@
 # Getting started ----
+library(yfR)
+library(tidyverse)
+fig_path <- "figures/"
 
 ## Examples ----
-
-# Here you find a series of example calls to 
-# yfR::yf_get()
-
+# Here you find a series of example calls to `yfR::yf_get()`
 
 # The steps of the algorithm are:
-
-# 1. check cache files for existing data
-
-# 2. if not in cache, fetch stock prices from Yahoo Finance
-#    and clean up the raw data
-
-# 3. write cache file if not available
-
-# 4. calculate all returns
-
-# 5. build diagnostics
-
-# 6. return the data to the user
+#   1. check cache files for existing data
+#   2. if not in cache, fetch stock prices from Yahoo Finance and clean up the raw data
+#   3. write cache file if not available
+#   4. calculate all returns
+#   5. build diagnostics
+#   6. return the data to the user
 
 
 ## Fetching a single stock price ----
 
-library(yfR)
-
 # set options for algorithm
-my_ticker  <- "GM"
+my_ticker  <- "DJT" # GM
 first_date <- Sys.Date() - 30
 last_date  <- Sys.Date()
 
@@ -42,19 +33,14 @@ df_yf <- yf_get(
 # output is a tibble() object
 print(df_yf)
 
-# A summary of the importing process is available
-# in the output's attributes
+# A summary of the importing process is available in the output's attributes
 base::attributes(df_yf)$df_control
 
 
 ## Fetching many stock prices ----
-
-library(ggplot2)
-
 my_ticker  <- c("TSLA", "GM", "MMM")
 first_date <- Sys.Date() - 100
 last_date  <- Sys.Date()
-
 
 df_yf_multiple <- yf_get(
   tickers = my_ticker,
@@ -62,16 +48,8 @@ df_yf_multiple <- yf_get(
   last_date = last_date
 )
 
-
-p <- ggplot(
-  data = df_yf_multiple,
-  mapping = aes(
-    x = ref_date,
-    y = price_adjusted,
-    color = ticker
-    )
-  ) +
-  geom_line(linewidth = 1) +
+p <- ggplot(data = df_yf_multiple, mapping = aes(x = ref_date, y = price_adjusted, color = ticker)) +
+  geom_line(linewidth = 1.2) +
   ylab("Price") +
   xlab("Date") +
   labs(
@@ -82,15 +60,12 @@ p <- ggplot(
 
 print(p)
 
-ggsave(filename = "01-multiple-stocks.png", width = 8, height = 4)
+ggsave(filename = "01-multiple-stocks.png", path = fig_path, width = 8, height = 4, bg = "white")
 
 graphics.off()
 
 
 ## Fetching daily/weekly/monthly/yearly price data ----
-
-library(dplyr)
-
 my_ticker  <- "GE"
 first_date <- "2005-01-01"
 last_date  <- Sys.Date()
@@ -126,41 +101,24 @@ df_yearly <- yf_get(
   ) |> 
   mutate(freq = "yearly")
 
-
 # bind it all together for plotting
-df_allfreq <- bind_rows(
-  list(df_daily, df_weekly, df_monthly, df_yearly)
-  ) |> 
-  mutate(
-    freq = factor(
-      freq,
-      levels = c("daily", "weekly", "monthly", "yearly")
-    )
-  )
+df_allfreq <- bind_rows(list(df_daily, df_weekly, df_monthly, df_yearly)) |> 
+  mutate(freq = factor(freq, levels = c("daily", "weekly", "monthly", "yearly")))
 
-p <- ggplot(
-  data = df_allfreq,
-  mapping = aes(
-    x = ref_date, 
-    y = price_adjusted
-    )
-  ) +
-  geom_line(linewidth = 1) +
+p <- ggplot(data = df_allfreq, mapping = aes(x = ref_date, y = price_adjusted)) +
+  geom_line(linewidth = 1.2) +
   facet_grid(freq ~ ticker) +
   theme_minimal() +
-  labs(
-    x = "", y = "Adjusted prices"
-  )
+  labs(x = "", y = "Adjusted prices")
 
 print(p)
 
-ggsave(filename = "02-multiple-frequencies.png", width = 4, height = 8)
+ggsave(filename = "02-multiple-frequencies.png", path = fig_path, width = 4, height = 8, bg = "white")
 
 graphics.off()
 
 
 ## Changing format to wide ----
-
 my_ticker  <- c("TSLA", "GM", "MMM")
 first_date <- Sys.Date() - 100
 last_date  <- Sys.Date()
@@ -173,7 +131,7 @@ df_yf_multiple <- yf_get(
 
 print(df_yf_multiple)
 
-
+# Convert to wide format
 l_wide <- yf_convert_to_wide(df_yf_multiple)
 
 names(l_wide)

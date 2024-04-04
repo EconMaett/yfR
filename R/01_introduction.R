@@ -1,32 +1,18 @@
 # 01 - Introduction ----
 
 ## Motivation ----
+# `yfR` facilitates the importing of stock prices from Yahoo finance, 
+# organizing the data in the tidy format and speeding up the process 
+# using a cache system and parallel computing.
 
-# yfR facilitates the importing of stock prices from Yahoo
-# finance, organizign the data in the tidy format and speeding
-# up the process usign a cache system and parallel computing.
-
-
-# yfR is the second and backwards-compatible version of
-# the BatchGetSymbols package, released in 2016.
-
-# See "How to use BatchGetSymbols"
-# https://cran.r-project.org/web/packages/BatchGetSymbols/vignettes/BatchGetSymbols-vignette.html
-
-# See "yfR and BatchGetSymbols"
-# https://docs.ropensci.org/yfR/articles/diff-batchgetsymbols.html
+# `yfR` is the second and backwards-compatible version of the `BatchGetSymbols` package.
 
 # Yahoo Finance (YF) provides stock prices from around the globe.
-# https://finance.yahoo.com/
-
-# All you need is the ticker symbol, e.g. "GM" for General Motors
-# and the first and last date.
+# All you need is the ticker symbol, e.g. "GM" for General Motors and the first and last date.
 
 
 ## The Data ----
-
-# The main function of the package is
-# yfR::yf_get()
+# The main function of the package is `yfR::yf_get()`
 # and it returns a data frame with the financial data.
 
 # All price data is measured at the unit of the financial exchange.
@@ -110,34 +96,29 @@
 # - A new feature called *collections* facilitates the download
 #   of multiple tickers from a particular market/index.
 #   For example, you can download data for all stocks in the
-#   S&P500 index with yf_collection_get("SP500")
+#   S&P500 index with `yf_collection_get("SP500")`
 
 #  - A session-persistent smart cache system is available by default.
-#   The data is saved locally and only missing portions are downloaded,
-#   if needed.
+#   The data is saved locally and only missing portions are downloaded, if needed.
 
-# - All dates are compared to a benchmark ticker such as
-#   "SP500" and, whenever an individual asset does not have
-#   a sufficient number of dates, the software drops it from
-#   the output.
-#   This means you can choose to ignore tickers with a high proportion
-#   of missing dates.
+# - All dates are compared to a benchmark ticker such as "SP500" and, 
+#   whenever an individual asset does not have a sufficient number of dates, 
+#   the software drops it from the output.
+#   This means you can choose to ignore tickers with a high proportion of missing dates.
 
-# - A customized function called yf_convert_to_wide()
-#   can transform the long tibble into the wide format,
-#   with tickers as columns.
+# - A customized function called `yf_convert_to_wide()`
+#   can transform the long tibble into the wide format, with tickers as columns.
 #   This is helpful in portfolio optimization.
 #   The output is a list() where each element is a 
 #   different target variable (prices, returns, volumes).
 
-# - Parallel computing with the furrr package is available,
+# - Parallel computing with the `furrr` package is available,
 #   speeding up the data importation process.
 
 
 ## Warnings ----
 
-# Yahoo Finance data is far from perfectly reliable,
-# especially for individual stocks.
+# Yahoo Finance data is far from perfectly reliable, especially for individual stocks.
 
 # Using it for research code with stock indices is fine,
 # but adjusted stock prices for individual assets
@@ -170,7 +151,7 @@
 library(yfR)
 
 # set options for algorithm
-my_ticker  <- "META"
+my_ticker  <- "DJT" # META
 first_date <- Sys.Date() - 30
 last_date  <- Sys.Date()
 
@@ -187,10 +168,7 @@ print(df_yf)
 
 ## Acknowledgements ----
 
-# The yfR package is based on quantomd by Joshua Ulrich
-# https://www.quantmod.com/
-# and it uses the function
-# quantomod::getSymbols()
-# to fetch raw data from Yahoo Finance.
+# The yfR package is based on `quantmod` by Joshua Ulrich https://www.quantmod.com/
+# and it uses the function `quantmod::getSymbols()` to fetch raw data from Yahoo Finance.
 
 # END
