@@ -1,107 +1,79 @@
 # Getting started ----
 library(yfR)
 library(tidyverse)
+Sys.setlocale("LC_TIME", "English")
 fig_path <- "figures/"
 
 ## Examples ----
 # Here you find a series of example calls to `yfR::yf_get()`
-
 # The steps of the algorithm are:
-#   1. check cache files for existing data
-#   2. if not in cache, fetch stock prices from Yahoo Finance and clean up the raw data
-#   3. write cache file if not available
-#   4. calculate all returns
-#   5. build diagnostics
-#   6. return the data to the user
-
+#   1) Check cache files for existing data
+#   2) If not in cache, fetch stock prices from Yahoo Finance and clean up the raw data
+#   3) Write cache file if not available
+#   4) Calculate all returns
+#   5) Build diagnostics
+#   6) Return the data to the user
 
 ## Fetching a single stock price ----
-
-# set options for algorithm
-my_ticker  <- "DJT" # GM
+# Set options for algorithm
+my_ticker  <- "TSLA"
 first_date <- Sys.Date() - 30
 last_date  <- Sys.Date()
 
-# fetch data
-df_yf <- yf_get(
-  tickers    = my_ticker,
-  first_date = first_date,
-  last_date  = last_date
-)
+# Fetch data
+df_yf <- yf_get(tickers    = my_ticker, first_date, last_date)
 
-
-# output is a tibble() object
+# Output is a tibble() object
 print(df_yf)
 
 # A summary of the importing process is available in the output's attributes
 base::attributes(df_yf)$df_control
-
 
 ## Fetching many stock prices ----
 my_ticker  <- c("TSLA", "GM", "MMM")
 first_date <- Sys.Date() - 100
 last_date  <- Sys.Date()
 
-df_yf_multiple <- yf_get(
-  tickers = my_ticker,
-  first_date = first_date,
-  last_date = last_date
-)
+df_yf_multiple <- yf_get(tickers = my_ticker, first_date, last_date)
 
 p <- ggplot(data = df_yf_multiple, mapping = aes(x = ref_date, y = price_adjusted, color = ticker)) +
   geom_line(linewidth = 1.2) +
-  ylab("Price") +
-  xlab("Date") +
   labs(
     title = "Stock prices from Yahoo Finance",
-    subtitle = "Adjusted for stock splits and dividends"
+    subtitle = "Adjusted for stock splits and dividends",
+    caption = "Source: Yahoo Finance",
+    x = NULL, y = NULL
   ) +
-  theme_minimal()
+  theme_minimal() +
+  theme(
+    legend.title = element_blank(),
+    legend.position = "top"
+  )
 
 print(p)
 
-ggsave(filename = "01-multiple-stocks.png", path = fig_path, width = 8, height = 4, bg = "white")
-
+ggsave(filename = "02-multiple-stocks.png", path = fig_path, height = 6, width = 10, bg = "white")
 graphics.off()
-
 
 ## Fetching daily/weekly/monthly/yearly price data ----
 my_ticker  <- "GE"
 first_date <- "2005-01-01"
 last_date  <- Sys.Date()
 
-df_daily <- yf_get(
-  tickers    = my_ticker,
-  first_date = first_date,
-  last_date  = last_date,
-  freq_data  = "daily"
-  ) |> 
+df_daily <- yf_get(tickers = my_ticker, first_date, last_date, freq_data = "daily") |> 
   mutate(freq = "daily")
 
-df_weekly <- yf_get(
-  tickers    = my_ticker,
-  first_date = first_date,
-  last_date  = last_date,
-  freq_data  = "weekly"
-  ) |> 
+df_weekly <- yf_get(tickers = my_ticker, first_date, last_date, freq_data = "weekly") |> 
   mutate(freq = "weekly")
 
-df_monthly <- yf_get(
-  tickers    = my_ticker,
-  first_date = first_date,
-  last_date  = last_date,
-  freq_data  = "monthly") |> 
+df_monthly <- yf_get(tickers = my_ticker, first_date, last_date, freq_data  = "monthly") |> 
   mutate(freq = "monthly")
 
 df_yearly <- yf_get(
-  tickers    = my_ticker,
-  first_date = first_date,
-  last_date  = last_date,
-  freq_data  = "yearly"
-  ) |> 
+  tickers = my_ticker, first_date, last_date, freq_data = "yearly") |> 
   mutate(freq = "yearly")
 
-# bind it all together for plotting
+# Bind it all together for plotting
 df_allfreq <- bind_rows(list(df_daily, df_weekly, df_monthly, df_yearly)) |> 
   mutate(freq = factor(freq, levels = c("daily", "weekly", "monthly", "yearly")))
 
@@ -113,22 +85,15 @@ p <- ggplot(data = df_allfreq, mapping = aes(x = ref_date, y = price_adjusted)) 
 
 print(p)
 
-ggsave(filename = "02-multiple-frequencies.png", path = fig_path, width = 4, height = 8, bg = "white")
-
+ggsave(filename = "02-multiple-frequencies.png", path = fig_path, height = 8, width = 10, bg = "white")
 graphics.off()
-
 
 ## Changing format to wide ----
 my_ticker  <- c("TSLA", "GM", "MMM")
 first_date <- Sys.Date() - 100
 last_date  <- Sys.Date()
 
-df_yf_multiple <- yf_get(
-  tickers    = my_ticker,
-  first_date = first_date,
-  last_date  = last_date
-)
-
+df_yf_multiple <- yf_get(tickers = my_ticker, first_date, last_date)
 print(df_yf_multiple)
 
 # Convert to wide format
