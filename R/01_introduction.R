@@ -1,4 +1,5 @@
 # 01 - Introduction ----
+# URL: https://docs.ropensci.org/yfR/
 library(yfR)
 library(tidyverse)
 Sys.setlocale("LC_TIME", "English")
@@ -39,20 +40,20 @@ fig_path <- "figures/"
 
 # Market indices: https://finance.yahoo.com/world-indices
 # Name                          - Symbol
-# S&P 500                       - GSPC
-# Dow Jones Inudstrial Average  - DJI
-# NASDAQ Composite              - IXIC
-# CBOE UK 100                   - BUK100P
-# Russell 2000                  - RUT
-# CBOE Volatility Index         - VIX
-# FTSE 100                      - FTSE
-# DAX Perfromance Index         - GDAXI
-# CAC 40                        - FCHI
-# Euro Stoxx50                  - STOXX50E
-# Euronext 100 Index            - N100
-# MOEX Russia Index             - IMOEX.ME
-# Nikkei 225                    - N225
-# Han Seng Index                - HSI
+# S&P 500                       - ^GSPC
+# Dow Jones Inudstrial Average  - ^DJI
+# NASDAQ Composite              - ^IXIC
+# CBOE UK 100                   - ^BUK100P
+# Russell 2000                  - ^RUT
+# CBOE Volatility Index         - ^VIX
+# FTSE 100                      - ^FTSE
+# DAX Perfromance Index         - ^GDAXI
+# CAC 40                        - ^FCHI
+# Euro Stoxx50                  - ^STOXX50E
+# Euronext 100 Index            - ^N100
+# MOEX Russia Index             - ^IMOEX.ME
+# Nikkei 225                    - ^N225
+# Han Seng Index                - ^HSI
 
 ## Features of yfR ----
 # - Fetches daily/weekly/monthly/annual stock prices/returns from Yahoo Finance and 
@@ -76,7 +77,6 @@ fig_path <- "figures/"
 # - EOD: https://eodhd.com/
 # - SimFin: https://www.simfin.com/
 # - Economatica: https://economatica.com/
-
 
 ## A simple example of usage ----
 # Set options for algorithm
@@ -107,6 +107,113 @@ df_yf |>
 
 ggsave(filename = "01_djt.png", path = fig_path, height = 6, width = 10, bg = "white")
 graphics.off()
+
+## World Indices ----
+# S&P 500 - ^GSPC
+my_ticker  <- "^GSPC"
+first_date <- "1990-01-01"
+last_date  <- Sys.Date()
+
+# Fetch data
+df_yf <- yf_get(tickers = my_ticker, first_date, last_date)
+
+print(df_yf)
+
+# Plot the data
+df_yf |> 
+  select(date = ref_date, price = price_adjusted) |> 
+  ggplot(mapping = aes(x = date, y = price)) +
+  geom_line(lwd = 1.2) +
+  scale_y_continuous(breaks = seq(0, 6000, 1000)) +
+  scale_x_date(date_breaks = "5 years", date_labels = "%Y-%m") +
+  labs(
+    title = "^GSPC - S&P 500 Index",
+    subtitle = "Adjusted closing price",
+    caption = "Source: Yahoo Finance",
+    x = NULL, y = NULL
+  ) +
+  theme_minimal()
+
+ggsave(filename = "01_gspc.png", path = fig_path, height = 6, width = 10, bg = "white")
+graphics.off()
+
+# ^VIX - CBOE Volatility Index
+my_ticker  <- "^VIX"
+first_date <- "1990-01-01"
+last_date  <- Sys.Date()
+
+# Fetch data
+df_yf <- yf_get(tickers = my_ticker, first_date, last_date)
+
+# Plot the data
+df_yf |> 
+  select(date = ref_date, price = price_adjusted) |> 
+  ggplot(mapping = aes(x = date, y = price)) +
+  geom_line(lwd = 1.2) +
+  scale_y_continuous(breaks = seq(0, 80, 10)) +
+  scale_x_date(date_breaks = "5 years", date_labels = "%Y-%m") +
+  labs(
+    title = "^VIX - CBOE Volatility Index",
+    caption = "Source: Yahoo Finance",
+    x = NULL, y = NULL
+  ) +
+  theme_minimal()
+
+ggsave(filename = "01_vix.png", path = fig_path, height = 6, width = 10, bg = "white")
+graphics.off()
+
+# ^N225 - Nikkei 225
+my_ticker  <- "^N225"
+first_date <- "1980-01-01"
+last_date  <- Sys.Date()
+
+# Fetch data
+df_yf <- yf_get(tickers = my_ticker, first_date, last_date)
+
+# Plot the data
+df_yf |> 
+  select(date = ref_date, price = price_adjusted) |> 
+  ggplot(mapping = aes(x = date, y = price)) +
+  geom_line(lwd = 1.2) +
+  scale_y_continuous(breaks = seq(0, 40000, 10000)) +
+  scale_x_date(date_breaks = "5 years", date_labels = "%Y-%m") +
+  labs(
+    title = "^N225 - Nikkei 225",
+    subtitle = "Adjusted closing price",
+    caption = "Source: Yahoo Finance",
+    x = NULL, y = NULL
+  ) +
+  theme_minimal()
+
+ggsave(filename = "01_n225.png", path = fig_path, height = 6, width = 10, bg = "white")
+graphics.off()
+
+# ^IXIC - NASDAQ Composite
+my_ticker  <- "^IXIC"
+first_date <- "1980-01-01"
+last_date  <- Sys.Date()
+
+# Fetch data
+df_yf <- yf_get(tickers = my_ticker, first_date, last_date)
+
+# Plot the data
+df_yf |> 
+  select(date = ref_date, price = price_adjusted) |> 
+  ggplot(mapping = aes(x = date, y = price)) +
+  geom_line(lwd = 1.2) +
+  scale_y_continuous(breaks = seq(0, 20000, 5000), limits = c(0, 20000)) +
+  scale_x_date(date_breaks = "5 years", date_labels = "%Y-%m") +
+  labs(
+    title = "^IXIC - NASDAQ Composite",
+    subtitle = "Adjusted closing price",
+    caption = "Source: Yahoo Finance",
+    x = NULL, y = NULL
+  ) +
+  theme_minimal()
+
+ggsave(filename = "01_ixic.png", path = fig_path, height = 6, width = 10, bg = "white")
+graphics.off()
+
 
 ## Acknowledgements ----
 # `yfR` uses the`quantmod::getSymbols()` by Joshua Ulrich https://www.quantmod.com/.
